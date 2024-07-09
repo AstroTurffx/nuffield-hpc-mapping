@@ -1,0 +1,58 @@
+h2 {
+    border-bottom: 2px solid rgba(128, 128, 128, 0.5);
+}
+
+.flex-container {
+    display: flex;
+}
+
+.half-split {
+    flex: 1;
+}
+
+#hs-left {
+    float: left;
+    margin-right: 0.5rem;
+}
+
+#hs-right {
+    float: right;
+    margin-left: 0.5rem;
+}
+
+
+#filter-section {
+    border: 2px solid gray;
+    border-radius: .5rem;
+    padding: 1rem 1rem 0.25rem 1rem;
+}
+
+#filter-form-layout {
+    display: grid;
+    grid-template-columns: 2fr 3fr;
+    grid-gap: 0.25rem;
+
+}
+
+#has-accelerator {
+    float: left;
+}
+
+#search-results-container {
+    height: 100%
+    
+}
+
+#search-results-title {
+    margin: .5rem;
+    margin-top: 1rem;
+}
+
+#search-results-spinner {
+    position: relative;
+    width: 2rem;
+    height: 2rem;
+    left: calc(50% - 1rem);
+    top: 5rem;
+
+}
