@@ -1,0 +1,48 @@
+.skeleton {
+    background-image: repeating-linear-gradient(90deg,
+        var(--bs-secondary-color),
+        white,
+        var(--bs-secondary-color)
+    );
+    background-size: 300% 100%;
+    animation: skeleton-loading 3s linear infinite;
+    opacity: 0.85;
+}
+@keyframes skeleton-loading {
+    0% {
+        background-position-x: 0%;
+    }
+    100% {
+        background-position-x: 300%;
+    }
+}
+.skeleton-h5 {
+    height: 1.25rem;
+    width: 50%;
+    border-radius: 0.25rem;
+}
+.skeleton-h6 {
+    height: 1rem;
+    width: 85%;
+    border-radius: 0.2rem;
+}
+.skeleton-small {
+    height: 0.8rem;
+    width: 75%;
+    border-radius: 0.15rem;
+}
+.skeleton-table {
+    height: 1rem;
+    border-radius: 0.2rem;
+}
+.skeleton-small-link {
+    height: 0.8rem;
+    width: 25%;
+    border-radius: 0.15rem;
+}
+.skeleton-table-n1 {width: 65%;}
+.skeleton-table-n2 {width: 89%;}
+.skeleton-table-n3 {width: 74%;}
+.skeleton-table-n4 {width: 70%;}
+.skeleton-table-n5 {width: 81%;}
+.skeleton-table-n6 {width: 60%;}

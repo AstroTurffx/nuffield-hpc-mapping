@@ -21,6 +21,7 @@ def index():
 def static_resources(path):
     local_path = "./static/" + path
     status_code = 200
+    
     if not os.path.isfile(local_path):
         local_path = "./static/404.html"
         status_code = 404
