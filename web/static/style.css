@@ -34,6 +34,10 @@ h2 {
 
 }
 
+#internal-error{
+    flex-grow: 1;
+}
+
 
 #has-accelerator {
     float: left;
@@ -91,6 +95,8 @@ h2 {
 }
 #results-card-sys-link{
     text-decoration: none;
+    position: relative;
+    right: 0;
 }
 .small-text {
     font-size: 0.8rem;

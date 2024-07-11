@@ -1,1 +1,3 @@
-SELECT name, total_nodes FROM hpcs
+UPDATE hpcs
+SET system_tier = 1, system_status="Active"
+WHERE name="Dawn"

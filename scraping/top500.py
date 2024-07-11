@@ -31,6 +31,7 @@ def parse_site_info(data):
     res["segment"] = data["Segment"]
     res["city"]    = data["City"]
     res["country"] = data["Country/Region"]
+    res["website"] = data.get("URL", None)
     return res
 
 # messy af, why am I doing it like this :/
@@ -42,10 +43,11 @@ def parse_system_info(data):
         res["processor_name"] = data["Processor"]
         res["interconnect"] = data["Interconnect"]
         res["installation_year"] = int(data["Installation Year"])
-        res["os"] = data["Operating System"]
+        res["os"] = data.get("Operating System", None)
         res["r_max"] = float(data["Linpack Performance (Rmax)"].replace("PFlop/s", ""))
         res["r_peak"] = float(data["Theoretical Peak (Rpeak)"].replace("PFlop/s", ""))
         res["n_max"] = int(data.get("Nmax", "0").replace(",", ""))
+        res["website"] = data.get("System URL", None)
         res["additional_info"] = get_system_addition_info(data)
 
         return res
@@ -70,7 +72,7 @@ def get_system_addition_info(data):
     data.pop("Operating System", None)
     res = ""
     for (key, value) in data.items():
-        res += f"{key}: {value}\n"
+        res += f"{key}: {value} | "
     return res.rstrip("\n")
 
 def generate_insert_cmd(table: str, data):
@@ -78,7 +80,10 @@ def generate_insert_cmd(table: str, data):
     values = ""
     for (key, value) in data.items():
         keys += key + ","
-        values += repr(value) + ","
+        v = repr(value)
+        if v == "None":
+            v = "NULL"
+        values += v + ","
     return f"INSERT INTO {table}({keys.rstrip(",")}) VALUES ({values.rstrip(",")});"
 
 # Messy but will do
@@ -122,7 +127,7 @@ def scrape():
             data = scrape_info(TOP500_SITE_URL + str(site_id))
             data = parse_site_info(data)
             data["site_id"] = site_id
-            cmd = generate_insert_cmd("sites",data)
+            cmd = generate_insert_cmd("sites", data)
             cur.execute(cmd)
 
             print(f"Inserted data for '{data["name"]}'")
