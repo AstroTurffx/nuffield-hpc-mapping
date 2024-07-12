@@ -21,11 +21,27 @@
                 <h2>Filter HPCs in the UK</h2>
                 <form id="filter-form">
                     <div id="filter-form-layout">
-                        <label class="form-check-label" for="hasAccelerator">Accelerator</label>
-                        <input class="form-check-input" type="checkbox" id="has-accelerator" name="hasAccelerator">
- 
                         <label class="form-label">Min Rmax (TFlop/s)</label>
-                        <input class="form-range" type="range" step="0.1" min="0.0" max="20" value="0.0" name="minRmax">
+                        <input class="form-range" type="range" step="0.1" min="0.0" max="20" value="0.0" name="min_r_max">
+                        
+                        <label class="form-label">Tier</label>
+                        <select name="tier" class="form-select">
+                            <option selected>Any</option>
+                            <option value="1">Tier 1</option>
+                            <option value="2">Tier 2</option>
+                            <option value="3">Tier 3</option>
+                        </select>
+
+                        <label class="form-label">System status</label>
+                        <select name="system_status" class="form-select">
+                            <option selected>Any</option>
+                            <option value="Active">Active</option>
+                            <option value="Planned">Planned</option>
+                            <option value="Out of Service">Out of Service</option>
+                            <option value="Under Maintenance">Under Maintenance</option>
+                            <option value="EOL">EOL</option>
+                        </select>
+
                     </div>
                     
                     <input type="submit">
@@ -64,16 +80,6 @@
                                         </th>
                                     </tr>
                                 </tbody>
-                                <tbody id="additional-info">
-                                    <tr style="display: none;">
-                                        <td>HPCG</th>
-                                        <td>350.21 TFlop/s</td>
-                                    </tr>
-                                    <tr style="display: none;">
-                                        <td>HPCG</th>
-                                        <td>350.21 TFlop/s</td>
-                                    </tr>
-                                </tbody>
                             </table>
                         </p>
                         <div class="skeleton skeleton-small-link"></div>
@@ -88,7 +94,7 @@
             </div>
         </div>
         <div class="half-split" id="hs-right">
-            heeloo
+            map here
         </div>
     </div>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
