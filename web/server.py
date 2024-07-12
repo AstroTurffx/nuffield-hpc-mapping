@@ -20,7 +20,7 @@ def index():
         return file.read(), 200
 
 @app.route('/api/hpcs/all', methods=["POST"])
-def api_filter_hpcs():
+def api_all_hpcs():
     global db_con
     try:
         req_data = request.get_json()
@@ -31,7 +31,7 @@ def api_filter_hpcs():
             total_cores, processor_name, installation_year, interconnect,
             r_max, additional_info, sites.name as 'site_name', city, country,
             hpcs.website as 'hpc_website', sites.website as 'site_website',
-            system_tier, system_status
+            system_tier, system_status, segment, system_id, total_nodes
             FROM hpcs, sites
             WHERE hpcs.site_id = sites.site_id
             ORDER BY top500_rank ASC
@@ -60,17 +60,21 @@ def api_filter_hpcs():
         return result, 200
     except Exception as err:
         print(err)
-        result = {
-            "error_name": err.__class__.__name__
-        }
+        result = { "error_name": err.__class__.__name__ }
         return result, 500
 
-
-
-# ====================
-# === HTML Helpers ===
-# ====================
-
+@app.route('/api/hpcs/node_details/<system_id>', methods=["GET"])
+def api_filter_hpcs(system_id):
+    global db_con
+    try:
+        cur = db_con.cursor()
+        cur.execute("SELECT number, processor_name, node_cores, accelerator, memory FROM node_details WHERE system_id = ?", (system_id,))
+        rows = cur.fetchall()
+        return render_template("node-detail-card.html", rows=rows), 200
+    except Exception as err:
+        print(err)
+        result = { "error_name": err.__class__.__name__ }
+        return result, 500
 
 # ==========================
 # === Dictionary Helpers ===

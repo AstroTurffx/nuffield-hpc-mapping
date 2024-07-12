@@ -1,3 +1,3 @@
 UPDATE hpcs
-SET system_tier = 1, system_status="Active"
+SET system_tier = 2
 WHERE name="Dawn"

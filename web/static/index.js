@@ -19,6 +19,17 @@ function onFormSubmit() {
 
 }
 
+function toggleModal(x, mode='toggle'){
+    $(x).parents("div.result-card").find("div.result-card-modal").modal(mode)
+
+    // I know it looks stupid but i gotta do it cause it could be undefined
+    loadedNodeDetails = $(x).data("loadedNodeDetails") == true
+    if (!loadedNodeDetails) {
+        api_loadNodeDetails(x)
+    }
+
+}
+
 function cardExpandAdditionalInfo(x){
     let card = $(x)
     // I know it looks stupid but i gotta do it cause it could be undefined
@@ -84,5 +95,27 @@ function api_loadAll() {
             $("div#internal-error").toggle()
         },
         contentType: "application/json; charset=utf-8"
+    });
+}
+
+function api_loadNodeDetails(caller) {
+    parentCard = $(caller).parents("div.result-card")
+    systemId = parentCard.data("system-id")
+    nodeDetails = parentCard.find("div#node-details")
+    skeletonCard = nodeDetails.find("div.node-detail-card")
+    internalErr = parentCard.find("div#internal-error")
+
+    $.ajax({
+        type: "GET",
+        url: "api/hpcs/node_details/" + systemId,
+        success: function(data, status) {
+            skeletonCard.hide()
+            nodeDetails.append(data)
+        },
+        error: function(req, textStatus, errorThrown) {
+            console.log(req.responseText);
+            skeletonCard.hide()
+            internalErr.show()
+        },
     });
 }

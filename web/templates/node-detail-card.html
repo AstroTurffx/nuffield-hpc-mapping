@@ -1,0 +1,32 @@
+{% for row in rows %}
+
+<div class="card node-detail-card">
+    <table class="table mb-0">
+        <tbody>
+            <tr>
+                <th>Number of nodes</th>
+                <td>{{ row.number }}</td>
+            </tr>
+            <tr>
+                <th>Processor</th>
+                <td>{{ row.processor_name }}</td>
+            </tr>
+            <tr>
+                <th>Node cores</th>
+                <td>{{ row.node_cores }}</td>
+            </tr>
+            <tr>
+                <th>Node memory</th>
+                <td>{{ row.memory }} GB</td>
+            </tr>
+            {% if row.accelerator %}
+            <tr>
+                <th>Accelerator</th>
+                <td>{{ row.accelerator }}</td>
+            </tr>
+            {% endif %}
+        </tbody>
+    </table>
+</div>
+
+{% endfor %}

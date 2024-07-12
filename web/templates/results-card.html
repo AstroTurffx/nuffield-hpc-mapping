@@ -1,11 +1,11 @@
-<div class="card result-card">
+<div class="card result-card" data-system-id="180036">
     <h5 class="card-title">
         {% if hpc_name %} {{ hpc_name }} {% else %} Unnamed system {% endif %}
         <span class="badge {{tier_color}}">
-            {% if system_tier %}
-            Tier {{system_tier}} | 
-            {% endif %}
-            #{{ top500_rank }}</span>
+            {% if system_tier %}Tier {{system_tier}}{% endif %}
+            {% if system_tier and top500_rank %}|{% endif %}
+            {% if top500_rank %}#{{top500_rank}}{% endif %}
+        </span>
     </h5>
     <h6 class="card-subtitle mb-1 text-muted">{{ manufacturer }} - {{ site_name}}</h6>
     
@@ -19,7 +19,10 @@
         {% if system_status %}
         <span class="badge {{status_color}}"> {{system_status}}</span>
         {% endif %}
-        <table class="table">
+        {% if segment %}
+        <span class="badge text-bg-secondary"> {{segment}}</span>
+        {% endif %}
+        <table class="table mb-1">
             <tbody>
                 <tr>
                     <td>Processor</th>
@@ -30,53 +33,156 @@
                     <td>{{ interconnect }}</td>
                 </tr>
                 <tr>
-                    <td>Total cores</th>
-                    <td>{{ "{:,}".format(total_cores) }}</td>
-                </tr>
-                <tr>
                     <td>Linpack Rmax</th>
                     <td>{{ r_max }} PFlop/s</td>
                 </tr>
-                {% if add_i|length > 0 %}
                 <tr>
-                    <th colspan=2>
-                        <div id="additionl-info-header" class="align-text-with-icon" onclick="cardExpandAdditionalInfo(this)">
-                            {% if add_i|length > 1 %}
-                            Additional Information ({{ add_i|length }} items)
-                            {% else %}
-                            Additional Information (1 item)
-                            {% endif %}
-                            <img class="arrow-icon" src="icons/arrow_up.svg" onload="SVGInject(this)">
-                        </div>
-                    </th>
+                    <td>Total cores</th>
+                    <td>{{ "{:,}".format(total_cores) }}</td>
                 </tr>
-                {% endif%}
-            </tbody>
-            <tbody id="additional-info" style="display: none;">
-                {% for info in add_i %}
-
-                <tr>
-                    <td>{{ info[0] }}</th>
-                    <td>{{ info[1] }}</td>
-                </tr>
-
-                {% endfor %}
             </tbody>
         </table>
     </p>
-    <div id="results-card-links">
-        {% if hpc_website %}
-        <a href="{{ hpc_website }}" id="results-card-sys-link" class="card-link small-text">
-            System link
-            <img class="link-icon" src="icons/link.svg" onload="SVGInject(this)">
-        </a>
-        {% endif %}
+    <div id="result-card-footer">
+        <div id="results-card-more-info"><button type="button" class="btn btn-primary" onclick="toggleModal(this, 'show')" >More info</button></div>
+        <div id="results-card-links">
+            {% if hpc_website %}
+            <a href="{{ hpc_website }}" id="results-card-sys-link" class="card-link small-text">
+                System link
+                <img class="link-icon" src="icons/link.svg" onload="SVGInject(this)">
+            </a>
+            {% endif %}
 
-        {% if site_website %}
-        <a href="{{ site_website }}" id="results-card-sys-link" class="card-link small-text">
-            Site link
-            <img class="link-icon" src="icons/link.svg" onload="SVGInject(this)">
-        </a>
-        {% endif %}
+            {% if site_website %}
+            <a href="{{ site_website }}" id="results-card-sys-link" class="card-link small-text">
+                Site link
+                <img class="link-icon" src="icons/link.svg" onload="SVGInject(this)">
+            </a>
+            {% endif %}
+        </div>
     </div>
+    <div class="modal fade result-card-modal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">
+                        {{ hpc_name }}
+                        <span class="badge {{tier_color}}">
+                            {% if system_tier %}Tier {{system_tier}}{% endif %}
+                            {% if system_tier and top500_rank %}|{% endif %}
+                            {% if top500_rank %}#{{top500_rank}}{% endif %}
+                        </span>
+                    </h5>
+                    <!-- <button type="button" class="close" onclick="toggleModal(this, 'hide')" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button> -->
+                </div>
+                <div class="modal-body">
+                    <h6 class="card-subtitle mb-1 text-muted">{{ manufacturer }} - {{ site_name}}</h6>
+                    
+                    <span class="align-text-with-icon mb-2 text-muted small-text">
+                        {{ installation_year }} |
+                        <img src="icons/location.svg" onload="SVGInject(this)" class="location-icon">
+                        {{ city }}, {{ country }}
+                    </span>
+                
+                    {% if system_status %}
+                    <span class="badge {{status_color}}"> {{system_status}}</span>
+                    {% endif %}
+                    {% if segment %}
+                    <span class="badge text-bg-secondary"> {{segment}}</span>
+                    {% endif %}
+
+                    <table class="table" style="margin-top: 1rem; margin-bottom: 1.5rem;">
+                        <tbody>
+                            <tr>
+                                <td>Processor</th>
+                                <td>{{ processor_name }}</td>
+                            </tr>
+                            <tr>
+                                <td>Interconnect</th>
+                                <td>{{ interconnect }}</td>
+                            </tr>
+                            <tr>
+                                <td>Total cores</th>
+                                <td>{{ "{:,}".format(total_cores) }}</td>
+                            </tr>
+                            <tr>
+                                <td>Linpack Rmax</th>
+                                <td>{{ r_max }} PFlop/s</td>
+                            </tr>
+                            {% if add_i|length > 0 %}
+                            <tr>
+                                <th colspan=2>
+                                    <div id="additionl-info-header" class="align-text-with-icon" onclick="cardExpandAdditionalInfo(this)">
+                                        {% if add_i|length > 1 %}
+                                        Additional Information ({{ add_i|length }} items)
+                                        {% else %}
+                                        Additional Information (1 item)
+                                        {% endif %}
+                                        <img class="arrow-icon" src="icons/arrow_up.svg" onload="SVGInject(this)">
+                                    </div>
+                                </th>
+                            </tr>
+                            {% endif%}
+                        </tbody>
+                        <tbody id="additional-info" style="display: none;">
+                            {% for info in add_i %}
+            
+                            <tr>
+                                <td>{{ info[0] }}</th>
+                                <td>{{ info[1] }}</td>
+                            </tr>
+            
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    
+                    {% if total_nodes %}
+                    <h5>Total nodes: {{total_nodes}}</h5>
+                    <div id="node-details" class="mb-2">
+                        <div class="card node-detail-card">
+                            <table class="table mb-0">
+                                <tbody class="">
+                                    <tr>
+                                        <td><div class="skeleton skeleton-table skeleton-table-n1"></div></th>
+                                        <td><div class="skeleton skeleton-table skeleton-table-n2"></div></td>
+                                    </tr>
+                                    <tr>
+                                        <td><div class="skeleton skeleton-table skeleton-table-n3"></div></th>
+                                        <td><div class="skeleton skeleton-table skeleton-table-n6"></div></td>
+                                    </tr>
+                                    <tr>
+                                        <td><div class="skeleton skeleton-table skeleton-table-n4"></div></th>
+                                        <td><div class="skeleton skeleton-table skeleton-table-n5"></div></td>
+                                    </tr>
+                                    <tr>
+                                        <td><div class="skeleton skeleton-table skeleton-table-n5"></div></th>
+                                        <td><div class="skeleton skeleton-table skeleton-table-n4"></div></td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div style="display: none;" id="internal-error" class="alert alert-danger" role="alert">An internal error occured.</div>
+                    </div>
+                    {% endif %}
+
+                    {% if hpc_website %}
+                    <a href="{{ hpc_website }}" id="results-card-sys-link" class="card-link small-text">
+                        System link
+                        <img class="link-icon" src="icons/link.svg" onload="SVGInject(this)">
+                    </a>
+                    {% endif %}
+        
+                    {% if site_website %}
+                    <a href="{{ site_website }}" id="results-card-sys-link" class="card-link small-text">
+                        Site link
+                        <img class="link-icon" src="icons/link.svg" onload="SVGInject(this)">
+                    </a>
+                    {% endif %}
+                </div>
+                <div class="modal-footer"><button type="button" class="btn btn-secondary" onclick="toggleModal(this, 'hide')"  >Close</button></div>
+            </div>
+        </div>
+      </div>
 </div>

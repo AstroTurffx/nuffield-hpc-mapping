@@ -95,8 +95,6 @@ h2 {
 }
 #results-card-sys-link{
     text-decoration: none;
-    position: relative;
-    right: 0;
 }
 .small-text {
     font-size: 0.8rem;
@@ -105,4 +103,22 @@ h2 {
     display: flex;
     align-items: center;
 }
-
+#result-card-footer {
+    display: flex;
+    justify-content: space-between;
+}
+#results-card-links {
+    display: flex;
+    align-items: flex-end;
+}
+#node-details {
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+}
+.node-detail-card {
+    column-count: 1;
+    margin: .3rem;
+}
+.modal-cusotm {
+    --bs-modal-width: 700px;
+}
