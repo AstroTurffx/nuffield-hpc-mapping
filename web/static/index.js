@@ -20,12 +20,14 @@ function onFormSubmit() {
 }
 
 function toggleModal(x, mode='toggle'){
-    $(x).parents("div.result-card").find("div.result-card-modal").modal(mode)
+    parentCard = $(x).parents("div.result-card")
+    parentCard.find("div.result-card-modal").modal(mode)
 
     // I know it looks stupid but i gotta do it cause it could be undefined
-    loadedNodeDetails = $(x).data("loadedNodeDetails") == true
-    if (!loadedNodeDetails) {
+    loadedNodeDetails = parentCard.data("loadedNodeDetails") == true
+    if (!loadedNodeDetails && parentCard.find("div#node-details").length) {
         api_loadNodeDetails(x)
+        parentCard.data("loadedNodeDetails", true) 
     }
 
 }
