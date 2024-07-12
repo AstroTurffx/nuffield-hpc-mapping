@@ -88,7 +88,9 @@ function api_loadAll() {
             "offset": 0
         }),
         success: function(data, status) {
-            $("div#search-results").append(data)
+            // console.log(data.length)
+            // console.log(data.start_range)
+            $("div#search-results").append(data.html)
             setLoadingState(false)
         },
         error: function(req, textStatus, errorThrown) {

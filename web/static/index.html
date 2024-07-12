@@ -23,6 +23,7 @@
                     <div id="filter-form-layout">
                         <label class="form-check-label" for="hasAccelerator">Accelerator</label>
                         <input class="form-check-input" type="checkbox" id="has-accelerator" name="hasAccelerator">
+ 
                         <label class="form-label">Min Rmax (TFlop/s)</label>
                         <input class="form-range" type="range" step="0.1" min="0.0" max="20" value="0.0" name="minRmax">
                     </div>
@@ -32,6 +33,7 @@
             </div>
             <div id="search-results-container">
                 <h2 id="search-results-title">Search results</h2>
+                <!-- <p id="search-results-length" class="text-muted">10 results found.</p> -->
                 <div id="search-results">
                     <div id="skeleton-card" class="card result-card">
                         <div class="card-title skeleton skeleton-h5"></div>
@@ -78,6 +80,11 @@
                     </div>
                     <div style="display: none;" id="internal-error" class="alert alert-danger" role="alert">An internal error occured.</div>
                 </div>
+                <!-- <div id="pagination">
+                    <span>Items per page</span> 
+                    <span>1-10 of 16 items</span>
+
+                </div> -->
             </div>
         </div>
         <div class="half-split" id="hs-right">

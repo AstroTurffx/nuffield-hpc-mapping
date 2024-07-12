@@ -122,3 +122,7 @@ h2 {
 .modal-cusotm {
     --bs-modal-width: 700px;
 }
+#search-results-length {
+    margin: 0;
+    margin-left: 0.5rem;
+}

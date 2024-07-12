@@ -18,7 +18,7 @@ app = Flask(__name__,
 def index():
     with open("./static/index.html") as file:
         return file.read(), 200
-
+    
 @app.route('/api/hpcs/all', methods=["POST"])
 def api_all_hpcs():
     global db_con
@@ -39,8 +39,10 @@ def api_all_hpcs():
             (req_data["limit"],req_data["offset"])
         )
         rows = cur.fetchall()
-        result = ""
+        html = ""
         for row in rows:
+            
+            # Compute values
             add_i = []
             for x in row["additional_info"].split(" | "):
                 if not x:
@@ -52,16 +54,37 @@ def api_all_hpcs():
             status_color = status_to_color_class(row["system_status"])
 
 
-            result += render_template("results-card.html",\
+            html += render_template("results-card.html",\
                                         tier_color=tier_color,\
                                         status_color=status_color,\
                                         add_i=add_i,\
                                         **row)
+        result = {
+            "length": len(rows),
+            "start_range": req_data["offset"],
+            "html": html
+        }
         return result, 200
     except Exception as err:
         print(err)
         result = { "error_name": err.__class__.__name__ }
         return result, 500
+
+
+@app.route('/api/hpcs/all/count', methods=["GET"])
+def api_all_hpcs_count():
+    global db_con
+    try:
+        cur = db_con.cursor()
+        cur.execute("SELECT COUNT(*) FROM hpcs")
+        length = cur.fetchone()[0]
+        result = { "length": length }
+        return result, 200
+    except Exception as err:
+        print(err)
+        result = { "error_name": err.__class__.__name__ }
+        return result, 500
+
 
 @app.route('/api/hpcs/node_details/<system_id>', methods=["GET"])
 def api_filter_hpcs(system_id):
