@@ -32,7 +32,7 @@ def main():
 
         cursor = connection.cursor()
         sql_cmds = contents.rstrip(';').split(';')
-        print(f"Running {len(sql_cmds)} commands...")
+        # print(f"Running {len(sql_cmds)} commands...")
         for sql in sql_cmds:
             res = cursor.execute(sql)
             rows = res.fetchall()

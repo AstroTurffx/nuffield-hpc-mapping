@@ -1,9 +1,10 @@
+import sys
 from pyquery import PyQuery
 import requests
 import sqlite3
 import time
 
-DATABASE = "../HPCs.db"
+DATABASE = "HPCs.db"
 TOP500_SYSTEM_URL = "https://www.top500.org/system/"
 TOP500_SITE_URL = "https://www.top500.org/site/"
 REQUEST_DELAY = 0.5
@@ -88,10 +89,15 @@ def generate_insert_cmd(table: str, data):
 
 # Messy but will do
 def scrape():
+    print("Scraping UK HPCs from top500.org.uk")
+
     # ~~POST request for UK HPCs~~
     # Top 500 protects thier API so I can't forge a POST request
     # so I will just download the page for now...
-    file = open("sublist-generator-top500-june-2024.html")
+    path_to_scraping = "./"
+    if len(sys.argv) > 1:
+        path_to_scraping = sys.argv[1]
+    file = open(path_to_scraping + "sublist-generator-top500-june-2024.html")
     sublist_html = file.read()
     file.close()
 
@@ -111,7 +117,7 @@ def scrape():
         hpc = (sys_id, site_id, sys_name, sys_rank)
         hpcs.append(hpc)
 
-    with sqlite3.connect(DATABASE) as con:
+    with sqlite3.connect(path_to_scraping + "../" + DATABASE) as con:
         print(f"Connected to '{DATABASE}'")
         cur = con.cursor()
 

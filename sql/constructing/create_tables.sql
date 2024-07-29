@@ -27,7 +27,8 @@ CREATE TABLE IF NOT EXISTS hpcs (
 
     website TEXT,
     system_tier INTEGER,
-    system_status TEXT,    
+    system_status TEXT,
+    system_type TEXT,
     additional_info TEXT,
     FOREIGN KEY(site_id) REFERENCES sites(site_id)
 );
