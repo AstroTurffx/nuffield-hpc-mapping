@@ -31,7 +31,8 @@ def api_all_hpcs():
             total_cores, processor_name, installation_year, interconnect,
             r_max, additional_info, sites.name as 'site_name', city, country,
             hpcs.website as 'hpc_website', sites.website as 'site_website',
-            system_tier, system_status, segment, system_id, total_nodes
+            system_tier, system_status, segment, system_id, total_nodes,
+            system_type
             FROM hpcs, sites
             WHERE hpcs.site_id = sites.site_id
             ORDER BY top500_rank ASC

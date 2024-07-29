@@ -1,0 +1,57 @@
+
+.double-range {
+    width: 100%;
+    height: 1.4rem;
+    position: relative;
+    margin-top: auto;
+    margin-bottom: auto;
+}
+.double-range input {
+    --start: 0%;
+    --stop: 100%;
+    -webkit-appearance: none;
+    appearance: none;
+    background: none;
+    pointer-events: none;
+    background-color: transparent;
+    position: absolute;
+    height: 1.5rem;
+    width: 100%;
+}
+.double-range ~ span {
+    font-size: 0.65rem;
+}
+.double-range ~ span:last-of-type {
+    text-align: right;
+    float: right;
+}
+
+.double-range input::-webkit-slider-runnable-track {
+    width: 100%;
+    border-color: transparent;
+    border-radius: 1rem;
+    height: 0.5rem;
+    color: transparent;
+    cursor: pointer;
+}
+
+.double-range input:first-of-type::-webkit-slider-runnable-track {
+    background-image: linear-gradient(to right, var(--bs-secondary-bg) var(--start), var(--bs-primary) var(--start), var(--bs-primary) var(--stop), var(--bs-secondary-bg)  var(--stop));
+}
+
+.double-range ::-moz-range-thumb {
+    width: 1rem;
+    height: 1rem;
+    cursor: pointer;
+    pointer-events: auto;
+}
+.double-range ::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 1rem;
+    height: 1rem;
+    cursor: pointer;
+    pointer-events: auto;
+    margin-top: -0.25rem;
+    background-color: var(--bs-secondary);
+    border-radius: 1rem;
+}

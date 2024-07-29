@@ -3,7 +3,7 @@
 // === On DOM ready ===
 $(document).ready(function() {
     // Register `onFormSubmit` event
-    $("#filterForm").submit(function () { onFormSubmit(); return false })
+    $("#filter-form").submit(function () { onFormSubmit(this); return false })
 
     // Load
     api_loadAll()
@@ -15,8 +15,9 @@ $(document).ready(function() {
 // ========================
 // === Document actions ===
 // ========================
-function onFormSubmit() {
-
+function onFormSubmit(form) {
+    let data = $(form).serializeArray()
+    console.log(data)
 }
 
 function toggleModal(x, mode='toggle'){
@@ -73,6 +74,23 @@ function setLoadingState(state) {
     }
 }
 
+function doubleRangeFirst(slider, max100){  
+    slider.style.setProperty('--start', (slider.value/max100) + '%')
+    $(slider).parents().eq(1).find("span").eq(0).text(numberWithCommas(slider.value))
+}
+
+function doubleRangeSecond(slider, max100){
+    slider.previousElementSibling.style.setProperty('--stop', (slider.value/max100) + '%')
+    $(slider).parents().eq(1).find("span").eq(1).text(numberWithCommas(slider.value))
+}
+
+
+// ========================
+// === Helper functions ===
+// ========================
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
 
 
 // =====================
