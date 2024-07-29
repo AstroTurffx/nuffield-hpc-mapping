@@ -47,14 +47,14 @@
         <div id="results-card-more-info"><button type="button" class="btn btn-primary" onclick="toggleModal(this, 'show')" >More info</button></div>
         <div id="results-card-links">
             {% if hpc_website %}
-            <a href="{{ hpc_website }}" id="results-card-sys-link" class="card-link small-text">
+            <a href="{{ hpc_website }}" target="_blank" id="results-card-sys-link" class="card-link small-text">
                 System link
                 <img class="link-icon" src="icons/link.svg" onload="SVGInject(this)">
             </a>
             {% endif %}
 
             {% if site_website %}
-            <a href="{{ site_website }}" id="results-card-sys-link" class="card-link small-text">
+            <a href="{{ site_website }}" target="_blank" id="results-card-sys-link" class="card-link small-text">
                 Site link
                 <img class="link-icon" src="icons/link.svg" onload="SVGInject(this)">
             </a>
@@ -169,14 +169,14 @@
                     {% endif %}
 
                     {% if hpc_website %}
-                    <a href="{{ hpc_website }}" id="results-card-sys-link" class="card-link small-text">
+                    <a href="{{ hpc_website }}" target="_blank" id="results-card-sys-link" class="card-link small-text">
                         System link
                         <img class="link-icon" src="icons/link.svg" onload="SVGInject(this)">
                     </a>
                     {% endif %}
         
                     {% if site_website %}
-                    <a href="{{ site_website }}" id="results-card-sys-link" class="card-link small-text">
+                    <a href="{{ site_website }}" target="_blank" id="results-card-sys-link" class="card-link small-text">
                         Site link
                         <img class="link-icon" src="icons/link.svg" onload="SVGInject(this)">
                     </a>
