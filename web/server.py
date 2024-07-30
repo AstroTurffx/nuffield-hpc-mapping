@@ -40,26 +40,7 @@ def api_all_hpcs():
             (req_data["limit"],req_data["offset"])
         )
         rows = cur.fetchall()
-        html = ""
-        for row in rows:
-            
-            # Compute values
-            add_i = []
-            for x in row["additional_info"].split(" | "):
-                if not x:
-                    continue
-                scndsplt = x.split(": ")
-                add_i.append(scndsplt)
-
-            tier_color = tier_to_color_class(row["system_tier"])
-            status_color = status_to_color_class(row["system_status"])
-
-
-            html += render_template("results-card.html",\
-                                        tier_color=tier_color,\
-                                        status_color=status_color,\
-                                        add_i=add_i,\
-                                        **row)
+        html = render_hpc_data(rows)
         result = {
             "length": len(rows),
             "start_range": req_data["offset"],
@@ -72,23 +53,8 @@ def api_all_hpcs():
         return result, 500
 
 
-@app.route('/api/hpcs/all/count', methods=["GET"])
-def api_all_hpcs_count():
-    global db_con
-    try:
-        cur = db_con.cursor()
-        cur.execute("SELECT COUNT(*) FROM hpcs")
-        length = cur.fetchone()[0]
-        result = { "length": length }
-        return result, 200
-    except Exception as err:
-        print(err)
-        result = { "error_name": err.__class__.__name__ }
-        return result, 500
-
-
 @app.route('/api/hpcs/node_details/<system_id>', methods=["GET"])
-def api_filter_hpcs(system_id):
+def api_node_details(system_id):
     global db_con
     try:
         cur = db_con.cursor()
@@ -99,6 +65,59 @@ def api_filter_hpcs(system_id):
         print(err)
         result = { "error_name": err.__class__.__name__ }
         return result, 500
+
+
+@app.route('/api/hpcs/filter', methods=["POST"])
+def api_filter_hpcs():
+    global db_con
+    try:
+        req_data = request.get_json()
+        print(type(req_data))
+        computed_filters = compute_filters(req_data)
+        print(computed_filters)
+
+        cur = db_con.cursor()
+        cur.execute(\
+            f"""SELECT hpcs.name as 'hpc_name', top500_rank, manufacturer,
+            total_cores, processor_name, installation_year, interconnect,
+            r_max, additional_info, sites.name as 'site_name', city, country,
+            hpcs.website as 'hpc_website', sites.website as 'site_website',
+            system_tier, system_status, segment, system_id, total_nodes,
+            system_type
+            FROM hpcs, sites
+            WHERE hpcs.site_id = sites.site_id
+            {computed_filters}
+            ORDER BY top500_rank ASC
+            LIMIT ? OFFSET ?""",\
+            (req_data["limit"],req_data["offset"])
+        )
+        rows = cur.fetchall()
+        html = render_hpc_data(rows)
+        result = {
+            "length": len(rows),
+            "start_range": req_data["offset"],
+            "html": html
+        }
+        return result, 200
+    except Exception as err:
+        print(err)
+        result = { "error_name": err.__class__.__name__ }
+        return result, 500
+
+
+# @app.route('/api/hpcs/all/count', methods=["GET"])
+# def api_all_hpcs_count():
+#     global db_con
+#     try:
+#         cur = db_con.cursor()
+#         cur.execute("SELECT COUNT(*) FROM hpcs")
+#         length = cur.fetchone()[0]
+#         result = { "length": length }
+#         return result, 200
+#     except Exception as err:
+#         print(err)
+#         result = { "error_name": err.__class__.__name__ }
+#         return result, 500
 
 # ==========================
 # === Dictionary Helpers ===
@@ -137,6 +156,53 @@ def status_to_color_class(status):
             return "text-bg-danger"
         case _:
             return "text-bg-secondary"
+    
+def compute_filters(data):
+    res = ""
+    for (key, value) in data.items():
+        match key:
+            case "r_max_1":
+                res += f"AND r_max > {value} "
+            case "r_max_2":
+                res += f"AND r_max < {value} "
+            case "total_cores_1":
+                res += f"AND total_cores > {value} "
+            case "total_cores_2":
+                res += f"AND total_cores < {value} "
+
+        if value == "Any":
+            continue
+
+        match key:
+            case "cpu_family":
+                res += f"AND processor_name LIKE '%{value}%' "
+            case "system_status":
+                res += f"AND system_status = '{value}' "
+            case "system_tier":
+                res += f"AND system_tier = {value} "
+    return res
+
+def render_hpc_data(rows):
+    html = ""
+    for row in rows:
+        
+        # Compute values
+        add_i = []
+        for x in row["additional_info"].split(" | "):
+            if not x:
+                continue
+            scndsplt = x.split(": ")
+            add_i.append(scndsplt)
+
+        tier_color = tier_to_color_class(row["system_tier"])
+        status_color = status_to_color_class(row["system_status"])
+
+        html += render_template("results-card.html",\
+                                    tier_color=tier_color,\
+                                    status_color=status_color,\
+                                    add_i=add_i,\
+                                    **row)
+    return html
 
 
 if __name__ == "__main__":

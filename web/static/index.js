@@ -16,8 +16,8 @@ $(document).ready(function() {
 // === Document actions ===
 // ========================
 function onFormSubmit(form) {
-    let data = $(form).serializeArray()
-    console.log(data)
+    let data = jsonArrayToDict($(form).serializeArray())
+    api_searchHPCs(data)
 }
 
 function toggleModal(x, mode='toggle'){
@@ -62,7 +62,7 @@ function setLoadingState(state) {
         skeletonCard.show()
         cards.each(function(i) {
             if ( !$(this).is(skeletonCard) )
-                $(this).hide()
+                $(this).remove()
         })
     }
     else { 
@@ -90,6 +90,12 @@ function doubleRangeSecond(slider, max100){
 // ========================
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+function jsonArrayToDict(x) {
+    res = {}
+    x.forEach((item) => res[item.name] = item.value )
+    return res
 }
 
 
@@ -139,5 +145,28 @@ function api_loadNodeDetails(caller) {
             skeletonCard.hide()
             internalErr.show()
         },
+    });
+}
+
+function api_searchHPCs(data){
+    data["limit"] = 10
+    data["offset"] = 0
+    setLoadingState(true)
+    $.ajax({
+        type: "POST",
+        url: "api/hpcs/filter",
+        data: JSON.stringify(data),
+        success: function(res, status) {
+            console.log("Got " + res.length + " results.")
+            // console.log(res.start_range)
+            $("div#search-results").append(res.html)
+            setLoadingState(false)
+        },
+        error: function(req, textStatus, errorThrown) {
+            setLoadingState(false)
+            console.warn(req.responseText)
+            $("div#internal-error").toggle()
+        },
+        contentType: "application/json; charset=utf-8"
     });
 }

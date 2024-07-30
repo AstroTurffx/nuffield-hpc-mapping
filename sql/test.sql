@@ -1,3 +1,2 @@
-UPDATE hpcs
-SET system_tier = 2
-WHERE name="Dawn"
+SELECT name, total_nodes FROM hpcs
+WHERE total_nodes > 0
