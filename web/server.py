@@ -1,4 +1,5 @@
 import json
+import math
 from flask import Flask, render_template, request
 import os.path
 import sqlite3
@@ -32,7 +33,7 @@ def api_all_hpcs():
             r_max, additional_info, sites.name as 'site_name', city, country,
             hpcs.website as 'hpc_website', sites.website as 'site_website',
             system_tier, system_status, segment, system_id, total_nodes,
-            system_type
+            system_type, longitude, latitude
             FROM hpcs, sites
             WHERE hpcs.site_id = sites.site_id
             ORDER BY top500_rank ASC
@@ -40,10 +41,17 @@ def api_all_hpcs():
             (req_data["limit"],req_data["offset"])
         )
         rows = cur.fetchall()
-        html = render_hpc_data(rows)
+        html = ""
+        pins = ""
+
+        for row in rows:
+            html += render_hpc(row)
+            pins += render_pin(row)
+        
         result = {
             "length": len(rows),
             "start_range": req_data["offset"],
+            "pins": pins,
             "html": html
         }
         return result, 200
@@ -72,9 +80,7 @@ def api_filter_hpcs():
     global db_con
     try:
         req_data = request.get_json()
-        print(type(req_data))
         computed_filters = compute_filters(req_data)
-        print(computed_filters)
 
         cur = db_con.cursor()
         cur.execute(\
@@ -83,7 +89,7 @@ def api_filter_hpcs():
             r_max, additional_info, sites.name as 'site_name', city, country,
             hpcs.website as 'hpc_website', sites.website as 'site_website',
             system_tier, system_status, segment, system_id, total_nodes,
-            system_type
+            system_type, longitude, latitude
             FROM hpcs, sites
             WHERE hpcs.site_id = sites.site_id
             {computed_filters}
@@ -92,10 +98,17 @@ def api_filter_hpcs():
             (req_data["limit"],req_data["offset"])
         )
         rows = cur.fetchall()
-        html = render_hpc_data(rows)
+        html = ""
+        pins = ""
+
+        for row in rows:
+            html += render_hpc(row)
+            pins += render_pin(row)
+        
         result = {
             "length": len(rows),
             "start_range": req_data["offset"],
+            "pins": pins,
             "html": html
         }
         return result, 200
@@ -182,27 +195,45 @@ def compute_filters(data):
                 res += f"AND system_tier = {value} "
     return res
 
-def render_hpc_data(rows):
-    html = ""
-    for row in rows:
-        
-        # Compute values
-        add_i = []
-        for x in row["additional_info"].split(" | "):
-            if not x:
-                continue
-            scndsplt = x.split(": ")
-            add_i.append(scndsplt)
+MAP_BOUNDS_LAT_1 = 60.846142
+MAP_BOUNDS_LAT_2 = 49.162600
+MAP_BOUNDS_LNG_1 = -10.476361
+MAP_BOUNDS_LNG_2 = 1.765083
 
-        tier_color = tier_to_color_class(row["system_tier"])
-        status_color = status_to_color_class(row["system_status"])
+def merc_y(lat):
+    return math.log(math.tan((lat * math.pi)/360.0 + math.pi/4.0))
 
-        html += render_template("results-card.html",\
-                                    tier_color=tier_color,\
-                                    status_color=status_color,\
-                                    add_i=add_i,\
-                                    **row)
-    return html
+def render_pin(row):
+    if not row["latitude"] or not row["longitude"]:
+        return ""
+    proj_lat = merc_y(row["latitude"])
+    ymax = merc_y(MAP_BOUNDS_LAT_1)
+    ymin = merc_y(MAP_BOUNDS_LAT_2)
+    t = 100.0 * (ymax - proj_lat) / (ymax - ymin)
+    l = 100.0 * (row["longitude"]-MAP_BOUNDS_LNG_1) / (MAP_BOUNDS_LNG_2-MAP_BOUNDS_LNG_1)
+    tooltip = f"""data-bs-toggle="tooltip" data-bs-title="{row["hpc_name"]}" """ \
+        if row["hpc_name"] else ""
+    return f"""<img style="display: none; top: {t}%; left: {l}%;" id="sys-id-{row["system_id"]}"
+                {tooltip}
+                class="map-pin" src="icons/map_pin.svg" onload="SVGInject(this)">"""
+
+def render_hpc(row):
+    # Compute values
+    add_i = []
+    for x in row["additional_info"].split(" | "):
+        if not x:
+            continue
+        scndsplt = x.split(": ")
+        add_i.append(scndsplt)
+
+    tier_color = tier_to_color_class(row["system_tier"])
+    status_color = status_to_color_class(row["system_status"])
+
+    return render_template("results-card.html",\
+                                tier_color=tier_color,\
+                                status_color=status_color,\
+                                add_i=add_i,\
+                                **row)
 
 
 if __name__ == "__main__":

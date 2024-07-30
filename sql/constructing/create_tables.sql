@@ -4,7 +4,9 @@ CREATE TABLE IF NOT EXISTS sites (
     name TEXT NOT NULL,
     segment TEXT,
     city TEXT NOT NULL,
-    country TEXT NOT NULL
+    country TEXT NOT NULL,
+    longitude FLOAT,
+    latitude FLOAT
 );
 
 CREATE TABLE IF NOT EXISTS hpcs (

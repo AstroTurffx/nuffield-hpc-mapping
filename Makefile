@@ -18,6 +18,9 @@ HPCs.db:
 	echo "Inserted system details"
 	
 	$(PYTHON) db.py sql/constructing/update_total_nodes.sql
+
+	$(PYTHON) db.py sql/constructing/site_coords.sql
+	echo "Inserted site geo-coordinates"
 	
 
 .SILENT: rebuild_db

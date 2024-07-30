@@ -15,12 +15,6 @@ h2 {
     margin-right: 0.5rem;
 }
 
-#hs-right {
-    float: right;
-    margin-left: 0.5rem;
-}
-
-
 #filter-section {
     border: 2px solid gray;
     border-radius: .5rem;
@@ -129,4 +123,30 @@ h2 {
 #search-results-length {
     margin: 0;
     margin-left: 0.5rem;
+}
+
+#hs-right {
+    float: right;
+    margin-left: 0.5rem;
+    display: flex;
+    justify-content: center;
+}
+#map-container {
+    position: fixed;
+    top: calc(50vh - 4rem);
+    -webkit-transform: translate(0, -50%);
+    transform: translate(0, -50%);
+}
+#map {
+    fill: var(--bs-secondary-color);
+}
+.map-pin {
+    fill: var(--bs-red);
+    z-index: 10;
+    width: 1.5rem;
+    height: 1.5rem;
+
+    position: absolute;    
+    -webkit-transform: translate(-50%, -100%);
+    transform: translate(-50%, -100%);
 }

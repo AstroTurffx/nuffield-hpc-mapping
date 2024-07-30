@@ -5,10 +5,13 @@ $(document).ready(function() {
     // Register `onFormSubmit` event
     $("#filter-form").submit(function () { onFormSubmit(this); return false })
 
+    // Enable map pin tooltips
+    $("div#map-container").tooltip({
+        selector: ".map-pin"
+    })
+
     // Load
     api_loadAll()
-
-
 })
 
 
@@ -55,22 +58,19 @@ function cardExpandAdditionalInfo(x){
 
 function setLoadingState(state) {
     let skeletonCard = $("div#skeleton-card")
-    let cards = $("div#search-results > div.result-card")
+    let cards = $("div#search-results > div.result-card:not(#skeleton-card)")
+    let pins = $("#map-container > .map-pin")
 
     if (state) {
         $("div#internal-error").hide()
         skeletonCard.show()
-        cards.each(function(i) {
-            if ( !$(this).is(skeletonCard) )
-                $(this).remove()
-        })
+        cards.remove()
+        // pins.remove()
     }
-    else { 
+    else {
         skeletonCard.hide()
-        cards.each(function(i) {
-            if ( !$(this).is(skeletonCard) )
-                $(this).show()
-        })
+        cards.show()
+        pins.show()
     }
 }
 
@@ -84,7 +84,6 @@ function doubleRangeSecond(slider, max100){
     $(slider).parents().eq(1).find("span").eq(1).text(numberWithCommas(slider.value))
 }
 
-
 // ========================
 // === Helper functions ===
 // ========================
@@ -97,7 +96,6 @@ function jsonArrayToDict(x) {
     x.forEach((item) => res[item.name] = item.value )
     return res
 }
-
 
 // =====================
 // === Backend comms ===
@@ -115,6 +113,7 @@ function api_loadAll() {
             // console.log(data.length)
             // console.log(data.start_range)
             $("div#search-results").append(data.html)
+            $("div#map-container").append(data.pins)
             setLoadingState(false)
         },
         error: function(req, textStatus, errorThrown) {
@@ -158,8 +157,8 @@ function api_searchHPCs(data){
         data: JSON.stringify(data),
         success: function(res, status) {
             console.log("Got " + res.length + " results.")
-            // console.log(res.start_range)
             $("div#search-results").append(res.html)
+            $("div#map-container").append(res.pins)
             setLoadingState(false)
         },
         error: function(req, textStatus, errorThrown) {
@@ -169,4 +168,21 @@ function api_searchHPCs(data){
         },
         contentType: "application/json; charset=utf-8"
     });
+}
+
+const MAP_BOUNDS_LAT_1 = 60.846142;
+const MAP_BOUNDS_LAT_2 = 49.162600;
+const MAP_BOUNDS_LNG_1 = -10.476361;
+const MAP_BOUNDS_LNG_2 = 1.765083;
+const MERC_Y = (lat) => Math.log(Math.tan(lat/2 + Math.PI/4))
+function coordsToPosition(lat,lng){
+    deg2rad = Math.PI/180
+    rlat = lat * deg2rad
+    ymax = MERC_Y(MAP_BOUNDS_LAT_1 * deg2rad)
+    ymin = MERC_Y(MAP_BOUNDS_LAT_2 * deg2rad)
+    t = 100.0 * (ymax - MERC_Y(rlat)) / (ymax - ymin)
+
+    // I think linear projection should be fine right?
+    l = 100.0 * (lng-MAP_BOUNDS_LNG_1) / (MAP_BOUNDS_LNG_2-MAP_BOUNDS_LNG_1);
+    return `top: ${t}%; left: ${l}%;`    
 }
