@@ -33,6 +33,10 @@ h2 {
     grid-gap: 0.25rem;
 
 }
+#filter-form-layout > label {
+    margin-top: auto;
+    margin-bottom: auto;
+}
 
 #internal-error{
     flex-grow: 1;
