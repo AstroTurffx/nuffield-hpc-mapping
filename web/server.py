@@ -1,5 +1,6 @@
 import json
 import math
+import random
 from flask import Flask, render_template, request
 import os.path
 import sqlite3
@@ -199,6 +200,7 @@ MAP_BOUNDS_LAT_1 = 60.846142
 MAP_BOUNDS_LAT_2 = 49.162600
 MAP_BOUNDS_LNG_1 = -10.476361
 MAP_BOUNDS_LNG_2 = 1.765083
+SHIFT_RANGE = 0.3
 
 def merc_y(lat):
     return math.log(math.tan((lat * math.pi)/360.0 + math.pi/4.0))
@@ -211,6 +213,11 @@ def render_pin(row):
     ymin = merc_y(MAP_BOUNDS_LAT_2)
     t = 100.0 * (ymax - proj_lat) / (ymax - ymin)
     l = 100.0 * (row["longitude"]-MAP_BOUNDS_LNG_1) / (MAP_BOUNDS_LNG_2-MAP_BOUNDS_LNG_1)
+
+    # Shift randomly to show there multiple
+    t += random.uniform(-SHIFT_RANGE,SHIFT_RANGE)
+    l += random.uniform(-SHIFT_RANGE,SHIFT_RANGE)
+
     name = row["hpc_name"] if row["hpc_name"] else row["site_name"]
     return f"""<img style="display: none; top: {t}%; left: {l}%;"
                 data-bs-toggle="tooltip" data-bs-title="{name}"

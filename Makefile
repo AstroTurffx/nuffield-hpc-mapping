@@ -21,6 +21,8 @@ HPCs.db:
 
 	$(PYTHON) db.py sql/constructing/site_coords.sql
 	echo "Inserted site geo-coordinates"
+
+	$(PYTHON) db.py sql/constructing/misc.sql
 	
 
 .SILENT: rebuild_db

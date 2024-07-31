@@ -145,8 +145,8 @@ h2 {
 .map-pin {
     fill: var(--bs-red);
     z-index: 10;
-    width: 1.5rem;
-    height: 1.5rem;
+    width: 1.3rem;
+    height: 1.3rem;
 
     position: absolute;    
     -webkit-transform: translate(-50%, -100%);
