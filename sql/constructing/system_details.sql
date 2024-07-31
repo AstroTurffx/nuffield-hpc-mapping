@@ -11,7 +11,11 @@ INSERT INTO node_details (system_id, number, processor_name, node_cores, acceler
 (180036, 4, 'AMD EPYC 7534P', 32, '4x AMD Instinct MI210', 512);
 
 --- Dawn ---
-UPDATE hpcs SET system_tier=2 WHERE name="Dawn";
+UPDATE hpcs SET system_tier=2
+WHERE system_id=180202;
+
+INSERT INTO node_details (system_id, number, processor_name, node_cores, accelerator, memory) VALUES
+(180202, 256, 'Intel Xeon Platinum 8468', 96, '4x Intel(R) Data Center GPU Max 1550', 1024);
 
 --- DiRAC, Tursa --- https://www.epcc.ed.ac.uk/hpc-services/dirac-tursa-gpu
 UPDATE hpcs SET system_tier=2, system_type="GPU"
@@ -25,9 +29,10 @@ INSERT INTO node_details (system_id, number, processor_name, node_cores, acceler
 --- Isambard-AI phase 1 ---
 UPDATE hpcs SET system_tier=2, system_type="AI Accelerator"
 WHERE system_id=180257;
+
 UPDATE hpcs SET system_tier=2 WHERE system_id=180257;
 INSERT INTO node_details (system_id, number, processor_name, node_cores, accelerator, memory) VALUES
-(180257, 476, 'NVIDIA Grace', 72, 'NVIDIA Hopper', 480)
+(180257, 476, 'NVIDIA Grace', 72, 'NVIDIA Hopper', 480);
 
 --- Baskerville ---
 UPDATE hpcs SET system_tier=2, system_type="GPU"
@@ -36,3 +41,10 @@ WHERE system_id=180243;
 INSERT INTO node_details (system_id, number, processor_name, node_cores, accelerator, memory) VALUES
 (180243, 6, 'Intel Xeon Platinum 8360Y', 72, '4x NVIDIA Ampere A100-80', 512),
 (180243, 46, 'Intel Xeon Platinum 8360Y', 72, '4x NVIDIA Ampere A100-40', 512);
+
+--- Wilkes-3 ---
+UPDATE hpcs SET system_tier=2, system_type="GPU"
+WHERE system_id=180046;
+
+INSERT INTO node_details (system_id, number, processor_name, node_cores, accelerator, memory) VALUES
+(180046, 90, 'AMD EPYC 7763', 128, '4x NVIDIA Ampere A100-SXM-80', 1000);

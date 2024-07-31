@@ -64,6 +64,7 @@ function setLoadingState(state) {
 
     if (state) {
         $("div#internal-error").hide()
+        $("#reset-filters").hide()
         skeletonCard.show()
         cards.remove()
         pins.remove()
@@ -103,6 +104,24 @@ function doubleRangeFirst(slider, max100){
 function doubleRangeSecond(slider, max100){
     slider.previousElementSibling.style.setProperty('--stop', (slider.value/max100) + '%')
     $(slider).parents().eq(1).find("span").eq(1).text(numberWithCommas(slider.value))
+}
+
+function resetFilters(){
+    // Reset form
+    $("form#filter-form")[0].reset()
+
+    // Reset double ranges
+    let s = $(".double-range > input").each(function() {
+        let els = $(this).get(0).style
+        els.setProperty("--start", "0%")
+        els.setProperty("--stop", "100%")
+
+        let value = $(this).attr("value")
+        let i = $(this).index()
+        $(this).parents().eq(1).find("span").eq(i).text(numberWithCommas(value))
+    })
+
+    api_loadAll()
 }
 
 // ========================
@@ -147,6 +166,7 @@ function api_loadAll() {
 function api_searchHPCs(data){
     data["limit"] = 10
     data["offset"] = 0
+
     setLoadingState(true)
     $.ajax({
         type: "POST",
@@ -155,6 +175,7 @@ function api_searchHPCs(data){
         success: function(res, status) {
             console.log("Got " + res.length + " results.")
             setHPCs(res)
+            $("#reset-filters").show()
         },
         error: function(req, textStatus, errorThrown) {
             setLoadingState(false)

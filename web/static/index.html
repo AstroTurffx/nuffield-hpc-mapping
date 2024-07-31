@@ -31,6 +31,13 @@
                             <option>Other</option>
                         </select>
 
+                        <label>Accelerator Family</label>
+                        <select name="accelerator_family" class="form-select">
+                            <option selected>Any</option>
+                            <option value="A100">NVIDIA Ampere A100</option>
+                            <option value="AMD Instinct">AMD Instinct</option>
+                            <option>Other</option>
+                        </select>
 
                         <label>Rmax (TFlop/s)</label>
                         <div>
@@ -51,7 +58,18 @@
                             <span>0</span>
                             <span>1,000,000</span>
                         </div>
+
+                        <label>Node memory</label>
+                        <div>
+                            <div class="double-range">
+                                <input type="range" step="64" min="0" max="1024" value="0" name="node_memory_1" oninput="doubleRangeFirst(this, 10.24)">
+                                <input type="range" step="64" min="0" max="1024" value="1024" name="node_memory_2" oninput="doubleRangeSecond(this, 10.24)">
+                            </div>
+                            <span>0</span>
+                            <span>1,024</span>
+                        </div>
                         
+                        <hr style="grid-column: span 2;">
                         
                         <label>Tier</label>
                         <select name="system_tier" class="form-select">
@@ -71,9 +89,29 @@
                             <option>EOL</option>
                         </select>
 
+                        <label>System type</label>
+                        <select name="system_type" class="form-select">
+                            <option selected>Any</option>
+                            <option>CPU</option>
+                            <option>GPU</option>
+                            <option>AI Accelerator</option>
+                            <option>Mixed</option>
+                        </select>
+
+                        <label>Segment</label>
+                        <select name="segment" class="form-select">
+                            <option selected>Any</option>
+                            <option>Academic</option>
+                            <option>Research</option>
+                            <option>Industry</option>
+                        </select>
                     </div>
                     <br>
                     <input class="btn btn-primary btn-sm" type="submit">
+                    <div class="text-muted hvr-transition"" id="reset-filters" onclick="resetFilters()">
+                        reset
+                        <img class="reset-icon" src="icons/reset.svg" onload="SVGInject(this)">
+                    </div>
                 </form>
             </div>
             <div id="search-results-container">

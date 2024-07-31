@@ -171,3 +171,26 @@ h2 {
     width: 2.3rem;
     height: 2.3rem;
 }
+
+.reset-icon {
+    fill: var(--bs-secondary-color);
+    height: 0.8rem;
+    width: 0.8rem;
+}
+
+#reset-filters {
+    display: inline-block;
+    fill: var(--bs-secondary-color);
+    cursor: pointer;
+
+    font-size: 0.8rem;
+    margin-left: 0.5rem;
+    padding: 0.4rem 0.5rem;
+    border-radius: 0.5rem;
+
+    background-color: transparent;
+}
+
+#reset-filters:hover {
+    background-color: var(--bs-secondary-bg);
+}

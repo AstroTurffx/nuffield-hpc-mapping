@@ -172,29 +172,63 @@ def status_to_color_class(status):
             return "text-bg-secondary"
     
 def compute_filters(data):
-    res = ""
+    filters = []
     for (key, value) in data.items():
         match key:
             case "r_max_1":
-                res += f"AND r_max > {value} "
+                filters.append(f"r_max >= {value}")
             case "r_max_2":
-                res += f"AND r_max < {value} "
+                filters.append(f"r_max <= {value}")
             case "total_cores_1":
-                res += f"AND total_cores > {value} "
+                filters.append(f"total_cores >= {value}")
             case "total_cores_2":
-                res += f"AND total_cores < {value} "
+                filters.append(f"total_cores <= {value}")
 
         if value == "Any":
             continue
 
         match key:
-            case "cpu_family":
-                res += f"AND processor_name LIKE '%{value}%' "
+            case "cpu_family" if value != "Other":
+                filters.append(f"processor_name LIKE '%{value}%'")
+            case "cpu_family" if value == "Other":
+                filters.append("processor_name NOT LIKE '%EPYC%'")
+                filters.append("processor_name NOT LIKE '%Xeon%'")
             case "system_status":
-                res += f"AND system_status = '{value}' "
+                filters.append(f"system_status = '{value}'")
             case "system_tier":
-                res += f"AND system_tier = {value} "
-    return res
+                filters.append(f"system_tier = {value}")
+            case "system_type":
+                filters.append(f"system_type = '{value}'")
+            case "segment":
+                filters.append(f"segment = '{value}'")
+    
+    # If has filter that require the 'node_detail' table
+    if data["accelerator_family"] != "Any" \
+        or data["node_memory_1"] != "0"   \
+        or data["node_memory_2"] != "1024":
+        nd_filters = []
+
+        for (key, value) in data.items():
+            match key:
+                case "node_memory_1":
+                    nd_filters.append(f"memory >= {value}")
+                case "node_memory_2":
+                    nd_filters.append(f"memory <= {value}")
+
+            if value == "Any":
+                continue
+
+            match key:
+                case 'accelerator_family' if value != "Other":
+                    nd_filters.append(f"accelerator LIKE '%{value}%'")
+                case "accelerator_family" if value == "Other":
+                    nd_filters.append("accelerator NOT LIKE '%A100%'")
+                    nd_filters.append("accelerator NOT LIKE '%AMD Instinct%'")
+                    
+
+        filters.append(f"system_id IN (SELECT system_id FROM node_details WHERE {" AND ".join(nd_filters)})")
+
+    return "AND " + " AND ".join(filters)
 
 MAP_BOUNDS_LAT_1 = 60.846142
 MAP_BOUNDS_LAT_2 = 49.162600

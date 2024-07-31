@@ -1,2 +1,1 @@
-SELECT name, total_nodes FROM hpcs
-WHERE total_nodes > 0
+SELECT system_id FROM node_details WHERE memory >= 576 AND memory <= 1024
