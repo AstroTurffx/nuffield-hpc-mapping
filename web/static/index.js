@@ -7,7 +7,8 @@ $(document).ready(function() {
 
     // Enable map pin tooltips
     $("div#map-container").tooltip({
-        selector: ".map-pin"
+        selector: "[data-bs-toggle='tooltip']",
+        container: 'div#map-container'
     })
 
     // Load
@@ -65,13 +66,33 @@ function setLoadingState(state) {
         $("div#internal-error").hide()
         skeletonCard.show()
         cards.remove()
-        // pins.remove()
+        pins.remove()
     }
     else {
         skeletonCard.hide()
         cards.show()
         pins.show()
     }
+}
+
+function setHPCs(data) {
+    $("div#search-results").append(data.html)
+    $("div#search-results > .result-card")
+    .on("mouseenter mouseleave", function() {
+        system_id = $(this).data("system-id");
+        pin = $(`.map-pin[data-system-id=${system_id}]`);
+        pin.toggleClass("selected-pin");
+    })
+
+    $("div#map-container").append(data.pins)
+    SVGInject($("div#map-container > img.map-pin")).then(() => {
+        $("div#map-container > .map-pin").on("mouseenter mouseleave", function() {
+            system_id = $(this).data("system-id")
+            $(`.card[data-system-id=${system_id}]`).toggleClass("selected-card")
+        })
+    })
+
+    setLoadingState(false)
 }
 
 function doubleRangeFirst(slider, max100){  
@@ -112,9 +133,28 @@ function api_loadAll() {
         success: function(data, status) {
             // console.log(data.length)
             // console.log(data.start_range)
-            $("div#search-results").append(data.html)
-            $("div#map-container").append(data.pins)
+            setHPCs(data)
+        },
+        error: function(req, textStatus, errorThrown) {
             setLoadingState(false)
+            console.warn(req.responseText)
+            $("div#internal-error").toggle()
+        },
+        contentType: "application/json; charset=utf-8"
+    });
+}
+
+function api_searchHPCs(data){
+    data["limit"] = 10
+    data["offset"] = 0
+    setLoadingState(true)
+    $.ajax({
+        type: "POST",
+        url: "api/hpcs/filter",
+        data: JSON.stringify(data),
+        success: function(res, status) {
+            console.log("Got " + res.length + " results.")
+            setHPCs(res)
         },
         error: function(req, textStatus, errorThrown) {
             setLoadingState(false)
@@ -144,29 +184,6 @@ function api_loadNodeDetails(caller) {
             skeletonCard.hide()
             internalErr.show()
         },
-    });
-}
-
-function api_searchHPCs(data){
-    data["limit"] = 10
-    data["offset"] = 0
-    setLoadingState(true)
-    $.ajax({
-        type: "POST",
-        url: "api/hpcs/filter",
-        data: JSON.stringify(data),
-        success: function(res, status) {
-            console.log("Got " + res.length + " results.")
-            $("div#search-results").append(res.html)
-            $("div#map-container").append(res.pins)
-            setLoadingState(false)
-        },
-        error: function(req, textStatus, errorThrown) {
-            setLoadingState(false)
-            console.warn(req.responseText)
-            $("div#internal-error").toggle()
-        },
-        contentType: "application/json; charset=utf-8"
     });
 }
 

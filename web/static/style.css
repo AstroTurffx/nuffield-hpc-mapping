@@ -139,6 +139,8 @@ h2 {
 }
 #map {
     fill: var(--bs-secondary-color);
+    pointer-events: none;
+    z-index: -100;
 }
 .map-pin {
     fill: var(--bs-red);
@@ -149,4 +151,23 @@ h2 {
     position: absolute;    
     -webkit-transform: translate(-50%, -100%);
     transform: translate(-50%, -100%);
+}
+
+.hvr-transition {
+    -webkit-transition: all 0.15s ease-in-out;
+    -moz-transition:    all 0.15s ease-in-out;
+    -o-transition:      all 0.15s ease-in-out;
+    transition:         all 0.15s ease-in-out;
+}
+
+.selected-card, .result-card:hover {
+    border-color: var(--bs-info);
+    border-width: 2px;
+    box-shadow: 0px 0px 0.5rem 0.1rem var(--bs-secondary-color);
+}
+
+.selected-pin, .map-pin:hover {
+    fill: red;
+    width: 2.3rem;
+    height: 2.3rem;
 }

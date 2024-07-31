@@ -100,7 +100,7 @@ def api_filter_hpcs():
         rows = cur.fetchall()
         html = ""
         pins = ""
-
+        
         for row in rows:
             html += render_hpc(row)
             pins += render_pin(row)
@@ -211,11 +211,11 @@ def render_pin(row):
     ymin = merc_y(MAP_BOUNDS_LAT_2)
     t = 100.0 * (ymax - proj_lat) / (ymax - ymin)
     l = 100.0 * (row["longitude"]-MAP_BOUNDS_LNG_1) / (MAP_BOUNDS_LNG_2-MAP_BOUNDS_LNG_1)
-    tooltip = f"""data-bs-toggle="tooltip" data-bs-title="{row["hpc_name"]}" """ \
-        if row["hpc_name"] else ""
-    return f"""<img style="display: none; top: {t}%; left: {l}%;" id="sys-id-{row["system_id"]}"
-                {tooltip}
-                class="map-pin" src="icons/map_pin.svg" onload="SVGInject(this)">"""
+    name = row["hpc_name"] if row["hpc_name"] else row["site_name"]
+    return f"""<img style="display: none; top: {t}%; left: {l}%;"
+                data-bs-toggle="tooltip" data-bs-title="{name}"
+                data-system-id="{row["system_id"]}" class="map-pin hvr-transition"
+                src="icons/map_pin.svg">"""
 
 def render_hpc(row):
     # Compute values
