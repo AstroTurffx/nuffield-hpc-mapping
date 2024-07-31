@@ -28,3 +28,11 @@ WHERE system_id=180257;
 UPDATE hpcs SET system_tier=2 WHERE system_id=180257;
 INSERT INTO node_details (system_id, number, processor_name, node_cores, accelerator, memory) VALUES
 (180257, 476, 'NVIDIA Grace', 72, 'NVIDIA Hopper', 480)
+
+--- Baskerville ---
+UPDATE hpcs SET system_tier=2, system_type="GPU"
+WHERE system_id=180243;
+
+INSERT INTO node_details (system_id, number, processor_name, node_cores, accelerator, memory) VALUES
+(180243, 6, 'Intel Xeon Platinum 8360Y', 72, '4x NVIDIA Ampere A100-80', 512),
+(180243, 46, 'Intel Xeon Platinum 8360Y', 72, '4x NVIDIA Ampere A100-40', 512);
