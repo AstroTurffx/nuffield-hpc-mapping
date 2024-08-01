@@ -5,19 +5,24 @@ This project is not a python package/library for external use, neither is it a m
 
 ## Usage
 The front end is a single page static site which uses AJAX to fetch and filter HPCs on the website.
-
-**IMAGE OF THE WEBSITE**
-
-The back-end is hosted by `web/server.py`which uses [Flask]() to serve static files and API endpoints.
-
----
+![Image of the home page](doc/images/index.png)![Image of using the filter function](doc/images/filtered.png)![Image of the 'more info' modal](doc/images/modal.png)
+The back-end is hosted by `web/server.py`which uses [Flask](https://flask.palletsprojects.com/en/3.0.x/) to serve static files and API endpoints.
 
 The `Makefile` is used to create the database and scrape information from [Top500](https://www.top500.org/) and add other information gathered. There are also a series of 'constructing' SQL files in `sql/constructing`. They are run in a certain to insert additional information not gathered from Top500.
-The script `scraping/top500.py` uses `requests` and `pyquery` to scrape Top500 and navigate through different pages. Instead of loading the [Sublist generator](https://www.top500.org/statistics/sublist/) web page with `requests`, the page is loaded from a file due to me not wanting to deal with keep-alive connections (could be a future to-do)·
-- **explain the scraping script**
 
-- **describe the database**
-This project uses SQLite3 on the back-end as it is a small project.
+The script `scraping/top500.py` uses `requests` and `pyquery` to scrape Top500 and navigate through different pages. Instead of loading the [Sublist generator](https://www.top500.org/statistics/sublist/) web page with `requests`, the page is loaded from a file due to me not wanting to deal with keep-alive connections (could be a future to-do)·
+
+The reference for the scraping script is as follows:
+```
+python top500py [path to scraping folder]
+```
+The path to scraping folder is optional and is there to allow it to be called from any working directory and still be able to find database file and downloaded sublist generator page. A path to the database and to the downloaded page would be a better design.
+
+This project uses SQLite3 on the back-end as it is a small project. The `sql` folder contains many queries for 'constructing' the database and also for the developer to debug and check the database. The SQL files are run with `db.py`.
+```
+python db.py <path to sql file> [output format]
+```
+The default output format is as a tuple (`(value1, value2, ...)`). In the presence of a 2nd argument, the output will be formatted as a dictionary.
 
 ## Sources and Resources
 #### Data
