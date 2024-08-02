@@ -26,8 +26,10 @@ The default output format is as a tuple (`(value1, value2, ...)`). In the presen
 
 ## Sources and Resources
 #### Data
-- [Top500](https://www.top500.org/)
-- [Top500 Sublist generator](https://www.top500.org/statistics/sublist/)
+- [Top500](https://www.top500.org/) - HPC data
+- [Top500 Sublist generator](https://www.top500.org/statistics/sublist/) - HPCs in the UK
+- [Google maps](https://maps.google.com/) - HPC site coordinates
+- Hardware details links in `sql/construcuting/system_details.sql`
 #### Frontend
 - [Bootstrap](https://getbootstrap.com/) - styling
 - [SVG Inject](https://github.com/iconfu/svg-inject)
