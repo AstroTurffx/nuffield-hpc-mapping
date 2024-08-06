@@ -5,7 +5,7 @@ This project is not a python package/library for external use, neither is it a m
 
 ## Usage
 The front end is a single page static site which uses AJAX to fetch and filter HPCs on the website.
-![Image of the home page](doc/images/index.png)![Image of using the filter function](doc/images/filtered.png)![Image of the 'more info' modal](doc/images/modal.png)
+![Image of the home page](docs/images/index.png)![Image of using the filter function](docs/images/filtered.png)![Image of the 'more info' modal](docs/images/modal.png)
 The back-end is hosted by `web/server.py`which uses [Flask](https://flask.palletsprojects.com/en/3.0.x/) to serve static files and API endpoints.
 
 The `Makefile` is used to create the database and scrape information from [Top500](https://www.top500.org/) and add other information gathered. There are also a series of 'constructing' SQL files in `sql/constructing`. They are run in a certain to insert additional information not gathered from Top500.
